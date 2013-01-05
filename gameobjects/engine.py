@@ -3,14 +3,16 @@
 """
 
 import pygame
+from logs import GameLog, SysLog
 
 class GameDataIFace(object):
   def __init__(self):
-    print "GameDataIFace"
     self.title = "2D Game"
     self.author = "James Rhys"
     self.prefs = GamePreferencesIFace()
-    self.log = GameLog()
+    self.date_started = None
+    self.game_log = GameLog()
+    self.game_log.write("Game Log initialized")
 
   def tick(self):
     pass
@@ -33,8 +35,8 @@ class GamePreferencesIFace(object):
     self.DEBUG = True
     self.DISPLAYSURF = None
 
-  def register_game(self, game_data):
-    self.game_data = game_data
+# def register_game(self, game_data):
+#   self.game_data = game_data
 
 class Level(object):
   
@@ -80,22 +82,14 @@ class GameController(object):
           print event.key
           self.terminate()
     
-  
-class GameLog(object):
-
-  @classmethod
-  def write(self, console_text):
-    print console_text
-  
 class Core(object):
 
   def __init__(self,debug=True):
 
     # GAME INIT
-#    self.prefs = GamePreferences()
     self.clock = pygame.time.Clock()
-#    self.log = GameLog()
     self.controller = GameController()
+    self.sys_log = SysLog
 
     # PYGAME INIT
     pygame.init()
@@ -110,7 +104,6 @@ class Core(object):
     self.game_data_object = game_data_object
 
   def start(self):
-    #self.log.write("Entering main loop")
     self.game_data_object.start()
 
     while True:
