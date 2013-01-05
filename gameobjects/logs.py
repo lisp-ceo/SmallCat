@@ -9,13 +9,15 @@ class Log(object):
     print console_text
 
 class SysLog(Log):
-"""
-  Log used By Gameobjects.engine.Core
-"""
-  pass  
+  """
+    Log used By Gameobjects.engine.Core
+  """
+  def __init__(self):
+    self.write("Sys Log initialized")
 
 class GameLog(Log):
-"""
-  Log used by clients implementing gameobjects.engine.GamePreferencesIFace 
-"""
-  pass
+  """
+    Log used by clients implementing gameobjects.engine.GamePreferencesIFace 
+  """
+  def __init__(self):
+    self.write("Game Log initialized")
