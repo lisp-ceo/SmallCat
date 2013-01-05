@@ -1,3 +1,10 @@
+"""
+
+  TODO: Clean up duplication of GAME_STATES lists between Game and GameStateDelegator
+
+"""
+
+
 #from menu import 
 from gameobjects.engine import GameDataIFace, GamePreferencesIFace
 from game_states import Menu, CutScene, Level
@@ -9,7 +16,7 @@ class Game(GameDataIFace):
     self.FPS = 60
     self.title = "Small Cat"
     self.date_started = datetime.date(2013,1,5)
-    self.GAME_STATES = [('MENU', Menu),('CUTSCENE', CutScene),('LEVEL', Level)]
+    self.GAME_STATES = [('MENU', Menu),('LEVEL', Level),('CUTSCENE', CutScene)]
     self.game_state_delegator = GameStateDelegator(self)
 
   def start(self):
@@ -35,6 +42,7 @@ class GameStateDelegator(object):
   """
 
   def __init__(self,game_ref):
+    self.GAME_STATES = [('MENU', Menu),('LEVEL', Level),('CUTSCENE', CutScene)]
     self.current_state = None
     self.game_ref = game_ref
 
@@ -43,8 +51,17 @@ class GameStateDelegator(object):
 
   def new_state(self, state):
     if self.current_state is not None:
-      del self.current_state
-    self.current_state = state(self.game_ref)
+      self.del_state(self.current_state) # Deletes itself
+    self.current_state = state(self.game_ref,self)
+
+  def del_state(self,state):
+    state.deconstruct()
+
+  def prev_state(self, CURRENT_STATE):
+    self.new_state(self.GAME_STATES[CURRENT_STATE-1][1])
+
+  def next_state(self, CURRENT_STATE):
+    self.new_state(self.GAME_STATES[CURRENT_STATE+1][1])
 
 class GamePreferences(GamePreferencesIFace):
   def __init__(self):

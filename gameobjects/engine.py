@@ -15,11 +15,12 @@ from logs import GameLog, SysLog
 
 class GameDataIFace(object):
   def __init__(self):
-    self.title = "2D Game"
-    self.author = "James Rhys"
+    self.TITLE = "2D Game"
+    self.AUTHOR = "3etamax"
     self.prefs = GamePreferencesIFace()
     self.date_started = None
     self.game_log = GameLog()
+    self.DISPLAYSURF = pygame.display.set_mode((self.prefs.WINWIDTH, self.prefs.WINHEIGHT))
 
     self.controller_direction_codes = {
                                   'LEFT':(97),
@@ -73,6 +74,7 @@ class GameDataIFace(object):
   
   def start(self):
     pygame.display.set_caption(self.title)
+    #pygame.display.set_icon(pygame.image.load('gameicon.png'))
 
 class GamePreferencesIFace(object):
 
@@ -83,7 +85,7 @@ class GamePreferencesIFace(object):
     self.HALF_WINWIDTH = int(self.WINWIDTH / 2)
     self.HALF_WINHEIGHT = int(self.WINHEIGHT / 2)
     self.DEBUG = True
-    self.DISPLAYSURF = pygame.display.set_mode((self.WINWIDTH, self.WINHEIGHT))
+    #self.DISPLAYSURF = pygame.display.set_mode((self.WINWIDTH, self.WINHEIGHT))
 
 # def register_game(self, game_data):
 #   self.game_data = game_data
