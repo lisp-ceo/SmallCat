@@ -8,9 +8,6 @@ class Log(object):
   def __init__(self):
     self.log_type = "Log"
 
-  # @classmethod - Uncommenting this will produce strange errors - probably something to do with
-  #                calling a static method dynamically
-
   def write(self, console_text):
     print self.log_type + ': ' +str(console_text)
 

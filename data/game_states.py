@@ -19,11 +19,6 @@ class GameState(object):
     self.log = self.game_ref.game_log.write
     self.controller = self.game_ref.controller_settings['key_down_codes']
     self.canvas = self.game_ref.DISPLAYSURF
-    self.load()
-
-  def load(self): 
-    # Call out to tile loader
-    pass
 
   def tick(self,game_data_object): 
     pass
@@ -42,13 +37,12 @@ class Menu(GameState):
     #self.log("Press 1 to enter color switch mode ")
 
   def tick(self,game_data_object): 
-    #if len(self.controller) != 0:
-    #  self.log(self.controller)
-    #self.canvas.fill((24, 255, 0))
+    if len(self.controller) != 0:
+      self.log(self.controller)
+    self.canvas.fill((255, 0, 0))
 
-    #if 49 in self.controller:
-    #  self.delegator.next_state(self.GAME_STATE)
-    self.delegator.next_state(self.GAME_STATE)
+    if 49 in self.controller:
+      self.delegator.next_state(self.GAME_STATE)
 
   def deconstruct(self):
     pass
@@ -58,19 +52,21 @@ class Level(GameState):
   def __init__(self,game_ref,delegator_ref):
     super(Level,self).__init__(game_ref,delegator_ref)
     self.GAME_STATE = 1 # Refs to GAME_STATES in GameDataIFace
-    self.load()
+    self.level_to_load = 1
+    self.load(1)
 
-  def load(self):
-    # Load Level data
-    # Load Tile data
-    # Load Images
-    self.tile_loader = TileLoader()
+  def load(self,level_to_load):
+    self.tile_loader = TileLoader(level_to_load) # Returns a reference to a display surface
+    self.map_surface = self.tile_loader.get_map_surface()
+    self.set_internal_state(1) # Level has finished loading
 
   def tick(self,game_data_object): 
+    self.canvas.fill((0, 255, 0))
     if self.internal_state == 0:
-      pass
+      self.canvas.fill((0, 255, 0))
     elif self.internal_state == 1:
-      pass
+      self.canvas.fill((0, 0, 255))
+      self.canvas.blit(self.map_surface,(0,0))
     elif self.internal_state == 2:
       pass
     else:
