@@ -21,29 +21,30 @@ class GameDataIFace(object):
     self.date_started = None
     self.game_log = GameLog()
 
-    self.controller_direction_codes = ['LEFT','RIGHT','UP','DOWN',
-                                  'UL','UR','DL','DR']
-    self.controller_directions = {
+    self.controller_direction_codes = {
                                   'LEFT':(97),
                                   'RIGHT':(110),
                                   'UP':(119),
                                   'DOWN':(115),
-                                  'UL':(97,119),
-                                  'UR':(110,119),
-                                  'DL':(97,115),
-                                  'DR':(110,115),
+                                }
+    self.controller_directions = {
+                                  'LEFT':False,
+                                  'RIGHT':False,
+                                  'UP':False,
+                                  'DOWN':False,
                                 }
     self.controller_settings = {
       'key_down': False,
       'key_down_codes': [],
-      'is_shift':False,
-      'current_direction': None
+      'is_shift':False
     }
 
   def _update_controller_settings(self,game_data_object):
     
     if game_data_object['controller'] is not None:
-      if game_data_object['controller'][0] == 2 and game_data_object['controller'][1] not in self.controller_settings['key_down_codes']: # KEY DOWN
+      if game_data_object['controller'][0] == 2 and game_data_object['controller'][1] == 27: # KEY DOWN
+        raise Exception("Closed")
+      elif game_data_object['controller'][0] == 2 and game_data_object['controller'][1] not in self.controller_settings['key_down_codes']: # KEY DOWN
         self.controller_settings['key_down'] += 1 
         self.controller_settings['key_down_codes'].append(game_data_object['controller'][1])
         if game_data_object['controller'][1] == 303 \
@@ -57,11 +58,6 @@ class GameDataIFace(object):
           self.controller_settings['is_shift'] = False 
       else:                                      #IGNORE FOR NOW 
         pass
-      self._update_controller_direction()
-
-  def _update_controller_direction(self):
-    #for key in self.controller_settings['key_down_codes']
-    pass
 
   def tick(self,game_data_object):
     """
@@ -151,6 +147,7 @@ class Core(object):
     # PYGAME INIT
     pygame.init()
     pygame.key.set_repeat(1,60)
+
   def register_game(self,game_data_object):
     self.game_data_object = game_data_object
 
@@ -158,7 +155,7 @@ class Core(object):
     self.game_data_object.start()
 
     while True:
-      #pygame.display.update()
+      pygame.display.update()
       self.game_tick_data['controller'] = self.controller.tick()
       self.game_data_object.tick(self.game_tick_data)
       self.clock.tick(self.game_data_object.FPS)
