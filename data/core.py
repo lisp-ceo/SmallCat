@@ -9,17 +9,17 @@ class Game(GameDataIFace):
     self.FPS = 60
     self.title = "Small Cat"
     self.date_started = datetime.date(2013,1,5)
-    self.GAME_STATES = {0:'MENU',1:'GAME',3:'CUTSCENE'}
-    self.game_state_delegator = GameStateDelegator()
+    self.GAME_STATES = [('MENU', Menu),('CUTSCENE', CutScene),('LEVEL', Level)]
+    self.game_state_delegator = GameStateDelegator(self)
 
   def start(self):
     super(Game,self).start()
     self.current_state = self.GAME_STATES[0]
-    self.game_state_delegator.new_state(
+    self.game_state_delegator.new_state(self.GAME_STATES[0][1])
 
   def tick(self,game_data_object):
     super(Game,self).tick(game_data_object)
-    self.state_function.tick(game_data_object)
+    self.game_state_delegator.tick(game_data_object)
 
     """
 
@@ -34,14 +34,18 @@ class GameStateDelegator(object):
     Manages instantiating and deconstructing the game states
   """
 
-  def __init__(self):
-    self.GAME_STATES = {0:'MENU',1:'GAME',3:'CUTSCENE'}
-    self.current_state
+  def __init__(self,game_ref):
+    self.current_state = None
+    self.game_ref = game_ref
 
+  def tick(self, game_data_object):
+    self.current_state.tick(game_data_object)
 
   def new_state(self, state):
-    pass      
-  
+    if self.current_state is not None:
+      del self.current_state
+    self.current_state = state(self.game_ref)
+
 class GamePreferences(GamePreferencesIFace):
   def __init__(self):
     GamePreferencesIFace.__init__(self)
