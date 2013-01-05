@@ -1,0 +1,9 @@
+Game - 1/M - Levels - (1/M Phases)
+GameEntity
+
+# Need to have all ctions and outputs flow through game engine.
+# Game engine has hooks for callbacks
+# On each tick, game gets a packet of data indicating that one frame has passed and what controller actions were done in that frame.
+# They will also need to pass data OUT, somehow
+  # I want to handle everything within the main game loop. BUT I want the game code itself to have pointers to audio function calls.
+  # This process will have to be solidified prior to doing any networking code
