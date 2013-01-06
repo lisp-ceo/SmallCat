@@ -5,9 +5,13 @@
   Sets options
   Loads games
 
+
+  TODO: Utilize multi-threading in Python to correctly async load levels
+
 """
 
 from tile_loader import TileLoader
+from camera import Camera
 
 class GameState(object):
 
@@ -48,17 +52,17 @@ class Menu(GameState):
     pass
 
 class Level(GameState): 
-
   def __init__(self,game_ref,delegator_ref):
     super(Level,self).__init__(game_ref,delegator_ref)
+    self.camera = Camera()
     self.GAME_STATE = 1 # Refs to GAME_STATES in GameDataIFace
     self.level_to_load = 1
     self.load(1)
 
   def load(self,level_to_load):
     self.tile_loader = TileLoader(level_to_load) # Returns a reference to a display surface
-    self.map_surface = self.tile_loader.get_map_surface()
     self.set_internal_state(1) # Level has finished loading
+    self.camera.register_map_surface(self.tile_loader.get_map_surface(),self.tile_loader.get_map_surface_dims())
 
   def tick(self,game_data_object): 
     self.canvas.fill((0, 255, 0))
@@ -66,7 +70,7 @@ class Level(GameState):
       self.canvas.fill((0, 255, 0))
     elif self.internal_state == 1:
       self.canvas.fill((0, 0, 255))
-      self.canvas.blit(self.map_surface,(0,0))
+      self.canvas.blit(self.camera.calc_view(),(0,0))
     elif self.internal_state == 2:
       pass
     else:

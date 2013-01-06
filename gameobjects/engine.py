@@ -85,10 +85,6 @@ class GamePreferencesIFace(object):
     self.HALF_WINWIDTH = int(self.WINWIDTH / 2)
     self.HALF_WINHEIGHT = int(self.WINHEIGHT / 2)
     self.DEBUG = True
-    #self.DISPLAYSURF = pygame.display.set_mode((self.WINWIDTH, self.WINHEIGHT))
-
-# def register_game(self, game_data):
-#   self.game_data = game_data
 
 class Level(object):
   
@@ -109,30 +105,6 @@ class GameController(object):
     for event in pygame.event.get([KEYUP,KEYDOWN]):
       if event.type == KEYDOWN or event.type == KEYUP:
         return (event.type,event.key)
-      #elif event.type == KEYDOWN:
-      #  if event.key in (K_UP, K_w):
-      #    print "UP"
-      #  elif event.key in (K_DOWN, K_s):
-      #    print "DOWN"
-      #  elif event.key in (K_LEFT, K_a):
-      #    print "DOWN"
-      #  elif event.key in (K_RIGHT, K_d):
-      #    print "RIGHT"
-      #  elif event.key == K_ESCAPE:
-      #    print event.key
-      #    self.terminate()
-      #elif event.type == KEYUP:
-      #  if event.key in (K_LEFT, K_a):
-      #    print event.key
-      #  elif event.key in (K_RIGHT, K_d):
-      #    print event.key
-      #  elif event.key in (K_UP, K_w):
-      #    print event.key
-      #  elif event.key in (K_DOWN, K_s):
-      #    print event.key
-      #  elif event.key == K_ESCAPE:
-      #    print event.key
-      #    self.terminate()
     
 class Core(object):
 
