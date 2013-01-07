@@ -98,6 +98,17 @@ class Level(object):
 
 class GameController(object):
 
+  """
+  
+    Returns a reference to an object that maintains the state of all pressed keys - abstracts out gamepads. Currently calling this method on each frame, will probably want to revise that or optimize it.
+
+    Think Jill Of The Jungle responsiveness. I may only want to sample input every 1/2 second
+
+  """
+
+  def __init__(self):
+    self.controller_state = {}
+
   def terminate(self):
     raise Exception('Quit called')
 

@@ -21,10 +21,13 @@ class GameState(object):
     self.delegator = delegator_ref
     self.game_ref = game_ref
     self.log = self.game_ref.game_log.write
-    self.controller = self.game_ref.controller_settings['key_down_codes']
+    self.controller = self.game_ref.controller_settings['key_down_codes'] # Should be ref to controller object 
     self.canvas = self.game_ref.DISPLAYSURF
 
   def tick(self,game_data_object): 
+    """
+      Always overriden by subclass.
+    """
     pass
 
   def deconstruct(self): 
@@ -71,6 +74,7 @@ class Level(GameState):
     elif self.internal_state == 1:
       self.canvas.fill((0, 0, 255))
       self.canvas.blit(self.camera.calc_view(),(0,0))
+      print game_data_object
     elif self.internal_state == 2:
       pass
     else:

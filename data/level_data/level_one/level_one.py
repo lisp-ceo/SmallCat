@@ -32,6 +32,9 @@ class LevelOneData(LevelData):
         '6' : (pygame.image.load(os.path.join('data','level_data','common','Tile_Dev_6.png')),(800,450))
       }
       self.BLOCKDATA = [
+                         ['6','5','4','3','2','1'],
+                         ['1','2','3','4','5','6'],
+                         ['6','5','4','3','2','1'],
                          ['1','2','3','4','5','6'],
       ]
       self.canvas_size = (self.block_size[0] * len(self.BLOCKDATA[0]), self.block_size[1] * len(self.block_size)) # Assumes equal-sized sub-arrays

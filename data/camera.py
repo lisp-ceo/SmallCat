@@ -15,10 +15,10 @@ class Camera(object):
     self.current_zoom = 0 
 
   def calc_view(self):
-    if self.current_zoom < 100:
-      self.current_zoom +=1
-    else:
-      self.current_zoom = 1
+    #if self.current_zoom < 100:
+    #  self.current_zoom +=1
+    #else:
+    #  self.current_zoom = 1
     zoomed_w = (self.WINWIDTH - self.map_surface_dims[0]) * self.current_zoom/100 + self.map_surface_dims[0]
     zoomed_h = (self.WINHEIGHT - self.map_surface_dims[1]) * self.current_zoom/100 + self.map_surface_dims[1]
 
