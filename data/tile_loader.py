@@ -41,6 +41,7 @@ class TileParser(object):
     blit_size = {'w':20,'h':20} # TODO: Associate this with block
     for level in self.canvas_data.BLOCKDATA:
       for block in level:
-        self.canvas_data.map_surface.blit(self.canvas_data.BLOCKS[block],blit_target)
+        blit_size = {'w':self.canvas_data.BLOCKS[block][1][0],'h':self.canvas_data.BLOCKS[block][1][1]} # TODO: Make sure this works with differently sized blocks - will not mesh well
+        self.canvas_data.map_surface.blit(self.canvas_data.BLOCKS[block][0],blit_target)
         blit_target = (blit_target[0]+blit_size['w'],blit_target[1])
       blit_target = (0,blit_target[1]+blit_size['h'])
