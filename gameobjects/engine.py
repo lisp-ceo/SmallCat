@@ -22,52 +22,9 @@ class GameDataIFace(object):
     self.game_log = GameLog()
     self.DISPLAYSURF = pygame.display.set_mode((self.prefs.WINWIDTH, self.prefs.WINHEIGHT))
 
-    self.controller_direction_codes = {
-                                  'LEFT':(97),
-                                  'RIGHT':(110),
-                                  'UP':(119),
-                                  'DOWN':(115),
-                                }
-    self.controller_directions = {
-                                  'LEFT':False,
-                                  'RIGHT':False,
-                                  'UP':False,
-                                  'DOWN':False,
-                                }
-    self.controller_settings = {
-      'key_down': False,
-      'key_down_codes': [],
-      'is_shift':False
-    }
-
-  def _update_controller_settings(self,game_data_object):
-    
-    if game_data_object['controller'] is not None:
-      if game_data_object['controller'][0] == 2 and game_data_object['controller'][1] == 27: # KEY DOWN
-        raise Exception("Closed")
-      elif game_data_object['controller'][0] == 2 and game_data_object['controller'][1] not in self.controller_settings['key_down_codes']: # KEY DOWN
-        self.controller_settings['key_down'] += 1 
-        self.controller_settings['key_down_codes'].append(game_data_object['controller'][1])
-        if game_data_object['controller'][1] == 303 \
-        or game_data_object['controller'][1] == 304:
-          self.controller_settings['is_shift'] = True
-      if game_data_object['controller'][0] == 3 and game_data_object['controller'][1] in self.controller_settings['key_down_codes']: # KEY UP
-        self.controller_settings['key_down'] -= 1 
-        self.controller_settings['key_down_codes'].remove(game_data_object['controller'][1])
-        if game_data_object['controller'][1] == 303 \
-        or game_data_object['controller'][1] == 304:
-          self.controller_settings['is_shift'] = False 
-      else:                                      #IGNORE FOR NOW 
-        pass
 
   def tick(self,game_data_object):
-    """
-
-      Does the following:
-        - Updates the controller_settings object
-
-    """
-    self._update_controller_settings(game_data_object)
+    pass
 
   def register_core(self,core_game_engine):
     self.core_game_eninge = core_game_engine
@@ -104,18 +61,59 @@ class GameController(object):
 
     Think Jill Of The Jungle responsiveness. I may only want to sample input every 1/2 second
 
+  CONTROLLER_STATE - Dict returned to GameState objects on each tick
+  CONTROLLER_DIRECTION_CODES - Dict mapping Controller Input to the controller_state object
+
   """
 
+  self.controller_direction_codes = {}
+  self.controller_state = {
+                                'LEFT':False,
+                                'RIGHT':False,
+                                'UP':False,
+                                'DOWN':False,
+                                'JUMP':False,
+                                'START':False,
+                                'RUN': False
+                                'WEP_1': False,
+                                'WEP_2': False,
+                                'WEP_3': False,
+                                'WEP_4': False,
+                                'WEP_5': False,
+                              }
+
   def __init__(self):
-    self.controller_state = {}
+    self._read_controller_config()
+
+  def _read_controller_config(self):
+    # TODO: Read input state from config file
+    controller_mapping = [
+                            (97,'LEFT'),
+                            (110,'RIGHT'),
+                            (119,'UP'),
+                            (115,'DOWN'),
+                            (0,'JUMP'),
+                            (2,'START'),
+                            (3,'RUN'),
+                            (4,'WEP_1'),
+                            (5,'WEP_2'),
+                            (6,'WEP_3'),
+                            (7,'WEP_4'),
+                            (8,'WEP_5')
+    ]
+
+    for control_key in controller_mapping:
+      self.controller_direction_codes[control_key[0]] = control_key[1]
 
   def terminate(self):
     raise Exception('Quit called')
 
   def tick(self):
     for event in pygame.event.get([KEYUP,KEYDOWN]):
-      if event.type == KEYDOWN or event.type == KEYUP:
-        return (event.type,event.key)
+      if event.type == KEYDOWN: 
+        self.controller_direction[event.key] = True
+      elif: event.type == KEYUP:
+        self.controller_direction[event.key] = False 
     
 class Core(object):
 
@@ -125,22 +123,26 @@ class Core(object):
     self.clock = pygame.time.Clock()
     self.controller = GameController()
     self.sys_log = SysLog()
-    self.game_tick_data = {
-      "controller" : None, 
-    }
 
     # PYGAME INIT
     pygame.init()
-    pygame.key.set_repeat(1,60)
 
   def register_game(self,game_data_object):
     self.game_data_object = game_data_object
+    pygame.key.set_repeat(1,self.game_data_object.FPS)
 
   def start(self):
     self.game_data_object.start()
 
     while True:
+
+      # Main loop
+      #   1) Repaint display
+      #   2) Update controller
+      #   3) Update the game engine  - engine just polls internal ref for game controller state
+      #   4) Tick the clock 
+
       pygame.display.update()
-      self.game_tick_data['controller'] = self.controller.tick()
+      self.controller.tick()
       self.game_data_object.tick(self.game_tick_data)
       self.clock.tick(self.game_data_object.FPS)
